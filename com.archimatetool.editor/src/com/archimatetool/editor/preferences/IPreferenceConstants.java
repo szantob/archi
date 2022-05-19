@@ -136,6 +136,8 @@ public interface IPreferenceConstants {
     
     String HINTS_BROWSER_JS_ENABLED = "hintsJSEnabled";
     String HINTS_BROWSER_EXTERNAL_HOSTS_ENABLED = "hintsExternalHostsEnabled";
+    
+    String SHOW_DUPLICATE_NAME_WARNING = "showDuplicateNameWarning";
 
     // ======================================= Internal =======================================
     
