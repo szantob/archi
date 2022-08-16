@@ -297,6 +297,47 @@ public abstract class AbstractTextControlContainerFigure extends AbstractContain
             }
         }
         
+        if(getIconicDelegate() != null && getIconicDelegate().hasImage() && getDiagramModelObject() instanceof IIconic) {
+            org.eclipse.swt.graphics.Rectangle imageBounds = getIconicDelegate().getImage().getBounds();
+            Rectangle rect = getBounds().getCopy();
+
+            int imagePosition = ((IIconic)getDiagramModelObject()).getImagePosition();
+            //int textAlignment = getDiagramModelObject().getTextAlignment();
+            int textPosition = ((ITextPosition)getDiagramModelObject()).getTextPosition();
+
+            if(textPosition == ITextPosition.TEXT_POSITION_TOP) {
+                if(imagePosition == IIconic.ICON_POSITION_TOP_RIGHT) {
+                    rect.width -= imageBounds.width;
+                }
+                if(imagePosition == IIconic.ICON_POSITION_TOP_LEFT) {
+                    rect.x += imageBounds.width;
+                    rect.width -= imageBounds.width;
+                }
+            }
+
+            if(textPosition == ITextPosition.TEXT_POSITION_CENTRE) {
+                if(imagePosition == IIconic.ICON_POSITION_MIDDLE_RIGHT) {
+                    rect.width -= imageBounds.width;
+                }
+                if(imagePosition == IIconic.ICON_POSITION_MIDDLE_LEFT) {
+                    rect.x += imageBounds.width;
+                    rect.width -= imageBounds.width;
+                }
+            }
+
+            if(textPosition == ITextPosition.TEXT_POSITION_BOTTOM) {
+                if(imagePosition == IIconic.ICON_POSITION_BOTTOM_RIGHT) {
+                    rect.width -= imageBounds.width;
+                }
+                if(imagePosition == IIconic.ICON_POSITION_BOTTOM_LEFT) {
+                    rect.x += imageBounds.width;
+                    rect.width -= imageBounds.width;
+                }
+            }
+
+            return rect;
+        }
+        
         // We will adjust for any internal icons...
         
         // If there is no icon offset or the icon is not visible we don't need to do any offsets
