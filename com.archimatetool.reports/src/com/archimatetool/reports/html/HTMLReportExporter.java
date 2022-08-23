@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -48,16 +49,19 @@ import com.archimatetool.editor.diagram.util.DiagramUtils;
 import com.archimatetool.editor.diagram.util.ModelReferencedImage;
 import com.archimatetool.editor.ui.ImageFactory;
 import com.archimatetool.editor.ui.services.EditorManager;
+import com.archimatetool.editor.ui.textrender.TextRenderer;
 import com.archimatetool.editor.utils.FileUtils;
 import com.archimatetool.editor.utils.StringUtils;
 import com.archimatetool.model.FolderType;
 import com.archimatetool.model.IArchimateConcept;
 import com.archimatetool.model.IArchimateModel;
+import com.archimatetool.model.IArchimateModelObject;
 import com.archimatetool.model.IDiagramModel;
 import com.archimatetool.model.IDiagramModelArchimateObject;
 import com.archimatetool.model.IDiagramModelContainer;
 import com.archimatetool.model.IDiagramModelObject;
 import com.archimatetool.model.IDiagramModelReference;
+import com.archimatetool.model.IDocumentable;
 import com.archimatetool.model.IFolder;
 import com.archimatetool.model.IIdentifier;
 import com.archimatetool.reports.ArchiReportsPlugin;
@@ -105,7 +109,8 @@ public class HTMLReportExporter {
     }
     
     public HTMLReportExporter(IArchimateModel model) {
-        fModel = model;
+        // Use a copy of the model
+        fModel = EcoreUtil.copy(model);
     }
     
     public void export() throws Exception {
@@ -325,6 +330,13 @@ public class HTMLReportExporter {
         stFrame.remove("element"); //$NON-NLS-1$
         //frame.remove("children");
         stFrame.add("element", component); //$NON-NLS-1$
+        
+        // Render label expressions in Documentation fields
+        if(component instanceof IDocumentable) {
+            IDocumentable documentable = (IDocumentable)component;
+            String s = TextRenderer.getDefault().renderWithExpression((IArchimateModelObject)component, documentable.getDocumentation());
+            documentable.setDocumentation(s);
+        }
         
         try(OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(elementFile), "UTF8")) { //$NON-NLS-1$
             writer.write(stFrame.render());
