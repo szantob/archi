@@ -378,7 +378,7 @@ public class DropinsPluginHandler {
      * If the bundle is in one of the "dropins" folders return its file (jar or folder), else return null
      */
     File getDropinsBundleFile(Bundle bundle) throws IOException {
-        File bundleFile = FileLocator.getBundleFileLocation(bundle).orElseThrow(() -> new IOException("Unable to locate the bundle file: " + bundle)); //$NON-NLS-1$
+        File bundleFile = FileLocator.getBundleFile(bundle);//.orElseThrow(() -> new IOException("Unable to locate the bundle file: " + bundle)); //$NON-NLS-1$
         // Normalise the file with File#getCanonicalFile() in case it has ".." in the path (on Mac). If it does, File#equals(File) doesn't work
         bundleFile = bundleFile.getCanonicalFile();
         File parentFolder = bundleFile.getParentFile();
